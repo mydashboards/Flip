@@ -27,7 +27,7 @@
     .container{max-width:1200px;margin:0 auto;padding:28px}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
     .brand{display:flex;align-items:center;gap:12px}
-    .logo{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:transparent;padding:3px}
+    .logo{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;font-weight:700}
     .title h1{font-size:20px;margin:0}
     .title .sub{font-size:12px;color:var(--muted)}
     .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -68,7 +68,7 @@
   <div class="container">
     <header>
       <div class="brand">
-        <div class="logo" aria-label="pplwise"><img src="pplwise_logo.png" alt="pplwise logo" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:8px;background:white"></div>
+        <div class="logo" aria-label="pplwise"><img src="pplwise_logo.png" alt="pplwise logo" style="width:100%;height:100%;object-fit:contain;border-radius:10px;"></div>
         <div class="title">
           <h1>Recruiting Performance Dashboard</h1>
           <div class="sub">Live view · powered by pplwise · <span id="lastUpdated"></span></div>
@@ -143,7 +143,7 @@
         "w/c 22 Sep 2025","w/c 29 Sep 2025","w/c 06 Oct 2025","w/c 13 Oct 2025","w/c 20 Oct 2025",
         "w/c 27 Oct 2025","w/c 03 Nov 2025","w/c 10 Nov 2025","w/c 17 Nov 2025","w/c 24 Nov 2025"
       ],
-      roles:["Account Executive SMB","Account Executive Corporate","Account Executive Enterprise","Account Executive Strategic","Solutions Engineer","Head of Sales"],
+      roles:["Account Executive SMB","Account Executive Corporate","Account Executive Enterprise","Account Executive Strategic","Solutions Engineer","Head of Sales", "Teamlead Solutions Engineer"],
       weekly:{
         "Account Executive Enterprise":{
           Sourced:[31, 43, 11, 0, 0, 63, 20, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -204,9 +204,9 @@
         {role:"Account Executive Enterprise", status:"filled", discovery:0, hm:0, task:0, final:0, offer:0, hired:1, note:""},
         {role:"Account Executive SMB", status:"filled", discovery:0, hm:0, task:0, final:0, offer:0, hired:1, note:""},
         {role:"Account Executive Strategic", status:"ok", discovery:7, hm:3, task:2, final:1, offer:0, hired:0, note:""},
-        {role:"Account Executive Corporate", status:"ok", discovery:3, hm:3, task:5, final:0, offer:2, hired:0, note:"Yannick Schroers; Jonathan Unger (Simon will talk to him – asked for higher salary)"},
-        {role:"Solutions Engineer", status:"new", discovery:2, hm:0, task:0, final:0, offer:0, hired:0, note:""},
-        {role:"Head of Sales", status:"new", discovery:4, hm:0, task:0, final:0, offer:0, hired:0, note:"High responses after first outreach of secret search"}
+        {role:"Account Executive Corporate", status:"ok", discovery:3, hm:3, task:5, final:0, offer:2, hired:0, note:"Yannick Schroers; Jonathan Unger (Simon will talk to him – higher salary)"},
+        {role:"Solutions Engineer", status:"new", discovery:1, hm:0, task:0, final:0, offer:0, hired:0, note:""},
+        {role:"Head of Sales", status:"new", discovery:4, hm:0, task:0, final:0, offer:0, hired:0, note:"High responses after first outreach"}
       ],
       notes:[
         "High response to outreach for Head of Sales.",
