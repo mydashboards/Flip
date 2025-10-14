@@ -213,13 +213,13 @@
         {role:"Account Executive Enterprise", status:"filled", discovery:0, hm:0, task:0, final:0, offer:0, hired:1, note:""},
         {role:"Account Executive SMB", status:"filled", discovery:0, hm:0, task:0, final:0, offer:0, hired:1, note:""},
         {role:"Account Executive Strategic", status:"ok", discovery:6, hm:2, task:0, final:2, offer:0, hired:0, note:""},
-        {role:"Account Executive Corporate", status:"ok", discovery:3, hm:4, task:5, final:0, offer:2, hired:0, note:"Yannick Schroers will reply til EoW, Jonathan Unger will sign today/tomorrow"},
+        {role:"Account Executive Corporate", status:"ok", discovery:3, hm:4, task:5, final:0, offer:2, hired:0, note:"Yannick Schroers doesn’t reply. Asked Basti to reach out. Jonathan Unger will sign today/tomorrow."},
         {role:"Solutions Engineer", status:"ok", discovery:1, hm:1, task:0, final:0, offer:0, hired:0, note:"70% opening rate in LI"},
         {role:"Teamlead Solutions Engineer", status:"new", discovery:0, hm:0, task:0, final:0, offer:0, hired:0, note:""},
         {role:"Head of Sales", status:"ok", discovery:4, hm:0, task:0, final:0, offer:0, hired:0, note:"high responses after first outreach"}
       ],
       notes:[
-        "Jonathan Unger will sign today/tomorrow.", "70% opening rate on Solutions Engineer outreach."
+        "Jonathan Unger will sign today/tomorrow.", "70% opening rate on Solutions Engineer outreach.", "Weekly sync prepared for Tuesday recruiting weekly."
       ]
     };
     // ---------- END DATA ----------
@@ -243,7 +243,7 @@
       weekSel.appendChild(o);
     });
     // Default to the CURRENT week: w/c 06 Oct 2025
-    const desiredLabel = 'w/c 06 Oct 2025';
+    const desiredLabel = 'w/c 13 Oct 2025';
     const defIndex = data.weeks.indexOf(desiredLabel);
     if(defIndex>=0){ weekSel.value = String(defIndex); }
 
@@ -323,11 +323,11 @@
       const roles = role==='all' ? data.roles : [role];
       const series = Object.fromEntries(stages.map(s=>[s,Array(data.weeks.length).fill(0)]));
       roles.forEach(r=>{ stages.forEach(s=>{ data.weekly[r][s].forEach((v,i)=>series[s][i]+=v); }) });
-      // Reverse chronology (newest → oldest) and show ALL weeks
-      const labels = [...data.weeks];
+      const currentIdx = Number(weekSel.value || data.weeks.indexOf(desiredLabel));
+      const labels = data.weeks.slice(0, currentIdx + 1);
       const datasets = stages.map((s,idx)=>({
         label:s,
-        data:[...series[s]],
+        data:[...series[s]].slice(0, currentIdx + 1),
         tension:.35,
         fill:false,
         borderColor:`hsl(${(idx*80)%360}deg 70% 45%)`,
