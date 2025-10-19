@@ -242,8 +242,8 @@
     data.roles.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; roleSel.appendChild(o); });
     weekSel.innerHTML='';
     [...validWeekIdx].reverse().forEach(i=>{ const o=document.createElement('option'); o.value=String(i); o.textContent=data.weeks[i]; weekSel.appendChild(o); });
-    // Default to LATEST week (fix)
-    if(validWeekIdx.length){ weekSel.value = String(validWeekIdx[0]); }
+    weekSel.value = String(validWeekIdx[validWeekIdx.length-1]);
+
 
     const kpis = [
       {key:'Sourced', label:'Candidates Sourced'},
