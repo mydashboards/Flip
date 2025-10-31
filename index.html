@@ -67,7 +67,8 @@
           <option value="all">All roles</option>
         </select>
         <select id="weekSelect" title="Select week">
-          <option value="latest">Latest week</option>
+          <!-- only current week provided; left here for consistency -->
+          <option value="0">w/c 27 Oct 2025</option>
         </select>
         <button class="btn" id="exportBtn">Export as PDF</button>
       </div>
@@ -78,11 +79,11 @@
     <div class="section">
       <div class="card pad">
         <h3 style="margin:0 0 12px 0;font-size:14px;color:var(--muted)">Recruiting Activity</h3>
-        <canvas id="funnelChart" height="200"></canvas>
+        <canvas id="funnelChart" height="220"></canvas>
       </div>
       <div class="card pad">
         <h3 style="margin:0 0 12px 0;font-size:14px;color:var(--muted)">Weekly Activity</h3>
-        <canvas id="trendChart" height="200"></canvas>
+        <canvas id="trendChart" height="220"></canvas>
       </div>
     </div>
 
@@ -90,11 +91,12 @@
       <h3 style="margin:0 0 12px 0;font-size:14px;color:var(--muted)">Pipeline Health</h3>
       <table class="table" id="healthTable">
         <colgroup>
-          <col style="width:16%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:10%"><col style="width:20%">
+          <col style="width:18%"><col style="width:12%">
+          <col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:30%">
         </colgroup>
         <thead>
           <tr>
-            <th>Role</th><th>Health</th><th>Outreach</th><th>DC</th><th>HM IV</th><th>Task</th><th>Final</th><th>Offer</th><th>Hired</th><th>Comment</th>
+            <th>Role</th><th>Health</th><th>DC</th><th>HM IV</th><th>Task</th><th>Final</th><th>Offer</th><th>Hired</th><th>Comment</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -112,100 +114,55 @@
   </div>
 
   <script>
-    // ---------- DATA (through w/c 13 Oct 2025) ----------
+    // ======================= EDIT HERE =======================
+    // Weeks: keep only current week so page always starts at 27 Oct.
     const data = {
-      weeks:[
-        "w/c 18 Aug 2025","w/c 25 Aug 2025","w/c 01 Sep 2025","w/c 08 Sep 2025","w/c 15 Sep 2025",
-        "w/c 22 Sep 2025","w/c 29 Sep 2025","w/c 06 Oct 2025","w/c 13 Oct 2025","w/c 20 Oct 2025",
-        "w/c 27 Oct 2025","w/c 03 Nov 2025","w/c 10 Nov 2025","w/c 17 Nov 2025","w/c 24 Nov 2025"
+      weeks: ["w/c 27 Oct 2025"],
+
+      // Roles dropdown order
+      roles: [
+        "Account Executive SMB","Account Executive Corporate","Account Executive Enterprise",
+        "Account Executive Strategic","Solutions Engineer","Team Lead Solutions Engineer",
+        "Head of Sales","AI Engineer"
       ],
-      roles:[
-        "Team Lead Solutions Engineer",
-        "Account Executive SMB","Account Executive Corporate","Account Executive Enterprise","Account Executive Strategic","Solutions Engineer","Head of Sales"
-      ],
-      // Weekly activity arrays; last index = w/c 13 Oct 2025 (updated per screenshot)
-      weekly:{
-        "Team Lead Solutions Engineer":{
-          Outreach:[0,0,0,0,0,0,0,0,25,41,0,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,0,2,6,0,0,0,0,0],
-          HM:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Account Executive Enterprise":{
-          Sourced:[31,43,11,0,0,63,20,0,0,0,0,0,0,0,0],
-          Discovery:[0,10,4,0,0,5,5,0,0,0,0,0,0,0,0],
-          HM:[0,5,6,0,0,2,2,0,0,0,0,0,0,0,0],
-          Case:[0,0,2,2,1,1,0,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,2,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,2,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,1,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Account Executive SMB":{
-          Sourced:[60,22,48,10,13,0,20,0,0,0,0,0,0,0,0],
-          Discovery:[0,9,6,4,7,2,1,0,0,0,0,0,0,0,0],
-          HM:[0,3,2,0,0,2,0,0,0,0,0,0,0,0,0],
-          Case:[0,0,0,2,2,0,1,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,0,0,2,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
-        },
-        "Account Executive Strategic":{
-          Outreach:[39,29,0,0,15,3,20,0,0,0,0,0,0,0,0],
-          Discovery:[0,6,4,4,3,5,4,2,2,2,0,0,0,0,0],
-          HM:[0,0,4,2,2,0,1,1,1,1,0,0,0,0,0],
-          Case:[0,0,0,0,0,2,0,1,0,1,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Account Executive Corporate":{
-          Sourced:[0,0,0,0,0,0,0,16,0,0,0,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,9,5,2,0,0,0,0,0],
-          HM:[0,0,0,0,0,0,0,3,1,5,0,0,0,0,0],
-          Case:[0,0,0,0,0,0,0,0,3,1,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,2,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Solutions Engineer":{
-          Outreach:[0,0,0,0,0,0,0,106,14,15,0,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,0,3,4,0,0,0,0,0],
-          HM:[0,0,0,0,0,0,0,0,0,2,0,0,0,0,0],
-          Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Head of Sales":{
-          Outreach:[0,0,0,0,0,0,0,28,0,0,0,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,0,6,8,0,0,0,0,0],
-          HM:[0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-          Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        }
+
+      // Recruiting Activity (one value per role for the current week)
+      // Tip: You can fill either Outreach or Sourced. Outreach is auto-mapped to Sourced.
+      weekly: {
+        "Account Executive SMB":      { Outreach:[0], Discovery:[0], HM:[0], Case:[0], CEO:[0], Offer:[0], Hired:[0] },
+        "Account Executive Corporate":{ Outreach:[21], Discovery:[3], HM:[1], Case:[0], CEO:[0], Offer:[0], Hired:[0] }, // ← from sheet
+        "Account Executive Enterprise":{ Outreach:[0], Discovery:[0], HM:[0], Case:[0], CEO:[0], Offer:[0], Hired:[0] },
+        "Account Executive Strategic":{ Outreach:[17], Discovery:[2], HM:[0], Case:[0], CEO:[1], Offer:[0], Hired:[0] }, // ← Final=CEO=1
+        "Solutions Engineer":         { Outreach:[0], Discovery:[3], HM:[1], Case:[0], CEO:[0], Offer:[0], Hired:[0] },
+        "Team Lead Solutions Engineer":{Outreach:[0], Discovery:[7], HM:[1], Case:[0], CEO:[0], Offer:[0], Hired:[0] },
+        "Head of Sales":              { Outreach:[0], Discovery:[2], HM:[4], Case:[0], CEO:[0], Offer:[0], Hired:[0] },
+        "AI Engineer":                { Outreach:[17], Discovery:[0], HM:[0], Case:[0], CEO:[0], Offer:[0], Hired:[0] }
       },
-      // Health (per screenshot)
-      health:[
-        {role:"Account Executive Enterprise", status:"filled", outreach:0, discovery:0, hm:0, task:0, final:0, offer:0, hired:"1/1", note:""},
-        {role:"Account Executive SMB", status:"filled", outreach:0, discovery:0, hm:0, task:0, final:0, offer:0, hired:"1/1", note:""},
-        {role:"Account Executive Strategic", status:"ok", outreach:0, discovery:4, hm:2, task:1, final:2, offer:0, hired:"0/2", note:"Simon Wester pot. Offer 10th Nov., Daniel Oh Final Mo. 27th Oct."},
-        {role:"Account Executive Corporate", status:"ok", outreach:0, discovery:4, hm:1, task:1, final:0, offer:0, hired:"2/3", note:""},
-        {role:"Solutions Engineer", status:"crit", outreach:15, discovery:3, hm:1, task:1, final:0, offer:0, hired:"0/1", note:"slowly moving. Multichannel approach: Outreach, Connect, Outreach"},
-        {role:"Team Lead Solutions Engineer", status:"ok", outreach:41, discovery:7, hm:5, task:0, final:0, offer:0, hired:"0/1", note:"promising pipeline"},
-        {role:"Head of Sales", status:"ok", outreach:0, discovery:3, hm:6, task:0, final:0, offer:0, hired:"0/1", note:"very strong pipeline"}
+
+      // Pipeline Health (display only; outreach not shown)
+      health: [
+        {role:"Account Executive Enterprise", status:"filled", discovery:0, hm:0, task:0, final:0, offer:0, hired:"1/1", note:""},
+        {role:"Account Executive SMB", status:"filled", discovery:0, hm:0, task:0, final:0, offer:0, hired:"1/1", note:""},
+        {role:"Account Executive Strategic", status:"ok", discovery:2, hm:1, task:0, final:1, offer:1, hired:"0/2", note:"Simon Wester will be offered after the 5th of Nov., Daniel Oh was a no from Bene. Role needs an outreach push."},
+        {role:"Account Executive Corporate", status:"ok", discovery:6, hm:0, task:2, final:0, offer:0, hired:"2/3", note:"Beginning of November recalibration with Basti regarding role requirements. Role needs an outreach push."},
+        {role:"Solutions Engineer", status:"on hold", discovery:3, hm:1, task:1, final:0, offer:0, hired:"0/1", note:"on hold since 29th Oct., candidates are informed"},
+        {role:"Team Lead Solutions Engineer", status:"ok", discovery:5, hm:7, task:0, final:0, offer:0, hired:"0/1", note:"Strong Pipeline"},
+        {role:"Head of Sales", status:"ok", discovery:3, hm:0, task:3, final:0, offer:0, hired:"0/1", note:"Case to be finished by EoD Monday by Simon, 2 strong female candidates in CS"},
+        {role:"AI Engineer", status:"new", discovery:6, hm:0, task:0, final:0, offer:0, hired:"0/1", note:"Trecilla to confirm candidates in review - then Alex will do DC"}
       ],
+
       notes:{
-        highlights:["Great Responserate on LI, HoS 50%, TL SE 45%", "Strategic 1 potential Offer next week", "TL SE picking up", "HoS Pipeline very healthy with 2 strong female candidates"],
-        challenges:["none of the Corporate candidates passed the Case. Need to recalibrate with Basti"],
-        priorities:["1 Team Lead SE", "2 Head of Sales", "3 Solutions Engineer", "4 AE Strategic / Corporate"]
+        highlights:[
+          "TL SE moving very quickly",
+          "Head of Sales 2 female candidates in Case Study"
+        ],
+        challenges:[
+          "Case Study for HoS needs to be provided quickly"
+        ],
+        priorities:["1 Team Lead SE", "2 Head of Sales", "3 Strategic / Corporate", "4 AI Engineer"]
       }
     };
-    // ---------- END DATA ----------
+    // ===================== END EDIT AREA =====================
 
     // Timestamp & footer
     const lastUpdatedEl = document.getElementById('lastUpdated');
@@ -213,39 +170,26 @@
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // Helpers
-    const monthMap = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-    function weekLabelToDate(label){ const m=label.match(/w\/c (\d{2}) (\w{3}) (\d{4})/); if(!m) return new Date(0); const [_,dd,mon,yyyy]=m; return new Date(+yyyy, monthMap[mon], +dd); }
-    function currentMonday(){ const t=new Date(); const d=new Date(t.getFullYear(), t.getMonth(), t.getDate()); const dow=d.getDay(); const diff=(dow===0?-6:1-dow); d.setDate(d.getDate()+diff); d.setHours(0,0,0,0); return d; }
-
-    // Normalize data: map Outreach -> Sourced so "Candidates Sourced" always shows
+    // Map Outreach -> Sourced so KPIs/Charts always have "Sourced"
     (function normalize(){
       Object.keys(data.weekly).forEach(role=>{
         const r = data.weekly[role];
         if(r.Outreach){
-          if(!r.Sourced){ r.Sourced = r.Outreach.slice(); }
-          else { r.Sourced = r.Sourced.map((v,i)=>v + (r.Outreach[i]||0)); }
+          r.Sourced = (r.Sourced || []).slice();
+          const add = r.Outreach;
+          if(r.Sourced.length===0) r.Sourced = add.slice();
+          else r.Sourced = r.Sourced.map((v,i)=>v + (add[i]||0));
         }
       });
     })();
 
-    // Build valid week indices (>= 18 Aug 2025, <= current week Monday)
-    const allWeekDates = data.weeks.map(weekLabelToDate);
-    const cutoff = currentMonday();
-    const startIdx = data.weeks.indexOf("w/c 18 Aug 2025");
-    const validWeekIdx = allWeekDates.map((dt,i)=>({dt,i}))
-      .filter(o=>o.i>=startIdx && o.dt<=cutoff)
-      .map(o=>o.i);
-
-    // Selects
+    // Build dropdowns (weeks has only current week; start at it)
     const roleSel = document.getElementById('roleSelect');
     const weekSel = document.getElementById('weekSelect');
     data.roles.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; roleSel.appendChild(o); });
-    weekSel.innerHTML='';
-    [...validWeekIdx].reverse().forEach(i=>{ const o=document.createElement('option'); o.value=String(i); o.textContent=data.weeks[i]; weekSel.appendChild(o); });
+    weekSel.value = "0";
 
-    // Default to the **current/most recent** week
-    weekSel.value = String(validWeekIdx[validWeekIdx.length - 1]);
-
+    // KPI spec
     const kpis = [
       {key:'Sourced', label:'Candidates Sourced'},
       {key:'Discovery', label:'Discovery Calls'},
@@ -255,51 +199,73 @@
       {key:'Hired', label:'Hires'}
     ];
 
-    const kpiGrid = document.getElementById('kpiGrid');
-    function calcDelta(curr, prev){ if(prev===0) return {txt:'–', cls:''}; const pct=((curr-prev)/prev)*100; return {txt:(pct>0?'+':'')+pct.toFixed(1)+'%', cls:pct>=0?'up':'down'}; }
-
     function aggregate(weekIndex, role){
       const keys=['Sourced','Discovery','HM','Case','CEO','Offer','Hired'];
       const totals=Object.fromEntries(keys.map(k=>[k,0]));
-      const prevTotals=Object.fromEntries(keys.map(k=>[k,0]));
+      const prevTotals=Object.fromEntries(keys.map(k=>[k,0])); // no prev week in this view
       const roles = role==='all'? data.roles : [role];
-      roles.forEach(r=>{ keys.forEach(k=>{ totals[k]+= (data.weekly[r]?.[k]?.[weekIndex]||0); if(weekIndex>0) prevTotals[k]+= (data.weekly[r]?.[k]?.[weekIndex-1]||0); }); });
+      roles.forEach(r=>{
+        const src = data.weekly[r]||{};
+        keys.forEach(k=>{ totals[k]+= (src[k]?.[weekIndex]||0); });
+      });
       return {totals, prevTotals};
     }
 
-    let funnelChart, trendChart; const funnelCtx=document.getElementById('funnelChart'); const trendCtx=document.getElementById('trendChart');
+    const kpiGrid = document.getElementById('kpiGrid');
+    const funnelCtx=document.getElementById('funnelChart');
+    const trendCtx=document.getElementById('trendChart');
+    let funnelChart, trendChart;
 
     function renderKPIs(){
-      const weekIndex=+weekSel.value; const role=roleSel.value; const {totals, prevTotals}=aggregate(weekIndex, role); kpiGrid.innerHTML='';
-      kpis.forEach(k=>{ const curr=totals[k.key]; const prev=prevTotals[k.key]||0; const d=calcDelta(curr, prev); const el=document.createElement('div'); el.className='card pad kpi'; el.innerHTML=`<div class="label">${k.label}</div><div class="value">${curr}</div><div class="delta ${d.cls}">${d.txt} vs last wk</div>`; kpiGrid.appendChild(el); });
+      const weekIndex=0; const role=roleSel.value;
+      const {totals}=aggregate(weekIndex, role);
+      kpiGrid.innerHTML='';
+      kpis.forEach(k=>{
+        const curr=totals[k.key]||0;
+        const el=document.createElement('div');
+        el.className='card pad kpi';
+        el.innerHTML=`<div class="label">${k.label}</div><div class="value">${curr}</div><div class="delta">–</div>`;
+        kpiGrid.appendChild(el);
+      });
     }
 
     function renderFunnel(){
-      const weekIndex=+weekSel.value; const role=roleSel.value; const {totals}=aggregate(weekIndex, role);
+      const {totals}=aggregate(0, roleSel.value);
       const stages=['Sourced','Discovery','HM','Case','CEO','Offer','Hired'];
-      const vals=stages.map(s=>totals[s]);
+      const vals=stages.map(s=>totals[s]||0);
       const bg=stages.map((_,i)=>`hsl(${(i*36)%360}deg 80% 65% / .9)`);
       if(funnelChart) funnelChart.destroy();
       funnelChart=new Chart(funnelCtx,{ type:'bar', data:{labels:stages, datasets:[{label:'Count', data:vals, backgroundColor:bg, borderRadius:10}]}, options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, grid:{color:'rgba(0,0,0,.05)'}}}}});
     }
 
     function renderTrend(){
-      const role=roleSel.value; const stages=['Sourced','Discovery','HM','Offer','Hired'];
+      const role=roleSel.value;
+      const stages=['Sourced','Discovery','HM','Offer','Hired'];
       const roles = role==='all'? data.roles : [role];
-      const series=Object.fromEntries(stages.map(s=>[s,Array(data.weeks.length).fill(0)]));
-      roles.forEach(r=>{ stages.forEach(s=>{ (data.weekly[r][s]||[]).forEach((v,i)=>series[s][i]+=v); }); });
-      const labels=validWeekIdx.map(i=>data.weeks[i]);
-      const datasets=stages.map((s,idx)=>({ label:s, data:validWeekIdx.map(i=>series[s][i]), tension:.35, fill:false, borderColor:`hsl(${(idx*70)%360}deg 70% 45%)`, pointRadius:2.5 }));
+      const series=Object.fromEntries(stages.map(s=>[s,[0]]));
+      roles.forEach(r=>{ stages.forEach(s=>{ series[s][0]+= (data.weekly[r]?.[s]?.[0]||0); }); });
+      const labels=data.weeks;
+      const datasets=stages.map((s,idx)=>({ label:s, data:series[s], tension:.35, fill:false, borderColor:`hsl(${(idx*70)%360}deg 70% 45%)`, pointRadius:3 }));
       if(trendChart) trendChart.destroy();
-      trendChart=new Chart(trendCtx,{ type:'line', data:{labels, datasets}, options:{ responsive:true, plugins:{legend:{position:'bottom'}}, scales:{y:{beginAtZero:true, grid:{color:'rgba(0,0,0,.05)'}}}}});
+      trendChart=new Chart(trendCtx,{ type:'line', data:{labels, datasets}, options:{responsive:true, plugins:{legend:{position:'bottom'}}, scales:{y:{beginAtZero:true, grid:{color:'rgba(0,0,0,.05)'}}}}});
     }
 
     function renderHealth(){
-      const tbody=document.querySelector('#healthTable tbody'); tbody.innerHTML=''; const roleFilter=roleSel.value; const rows=(data.health||[]).filter(h=>roleFilter==='all'||h.role===roleFilter);
-      rows.forEach(h=>{ const tr=document.createElement('tr'); let label,cls; switch(h.status){ case 'ok':label='Healthy';cls='ok';break; case 'warn':label='Attention';cls='warn';break; case 'bad':label='Critical';cls='bad';break; case 'crit':label='Critical';cls='bad';break; case 'new':label='○ New';cls='new';break; case 'filled':label='🏁 Filled';cls='filled';break; default:label=h.status;cls='new'; }
+      const tbody=document.querySelector('#healthTable tbody'); tbody.innerHTML='';
+      const roleFilter=roleSel.value;
+      (data.health||[]).filter(h=>roleFilter==='all'||h.role===roleFilter).forEach(h=>{
+        const tr=document.createElement('tr'); let label,cls;
+        switch(h.status){
+          case 'ok':label='Healthy';cls='ok';break;
+          case 'warn':label='Attention';cls='warn';break;
+          case 'bad':label='Critical';cls='bad';break;
+          case 'new':label='○ New';cls='new';break;
+          case 'filled':label='🏁 Filled';cls='filled';break;
+          case 'on hold':label='On hold';cls='warn';break;
+          default:label=h.status;cls='new';
+        }
         tr.innerHTML=`<td>${h.role}</td>
           <td><span class="badge ${cls}">${label}</span></td>
-          <td>${h.outreach??0}</td>
           <td>${h.discovery??0}</td>
           <td>${h.hm??0}</td>
           <td>${h.task??0}</td>
@@ -311,14 +277,19 @@
       });
     }
 
-    function renderNotes(){ const el=document.getElementById('notes'); const n=data.notes||{highlights:[],challenges:[],priorities:[]}; el.innerHTML=`<h4>Highlights</h4><ul>${(n.highlights||[]).map(x=>`<li>${x}</li>`).join('')}</ul><h4>Challenges</h4><ul>${(n.challenges||[]).map(x=>`<li>${x}</li>`).join('')}</ul><h4>Outreach Priorities</h4><ul>${(n.priorities||[]).map(x=>`<li>${x}</li>`).join('')}</ul>`; }
+    function renderNotes(){
+      const el=document.getElementById('notes'); const n=data.notes;
+      el.innerHTML=`<h4>Highlights</h4><ul>${n.highlights.map(x=>`<li>${x}</li>`).join('')}</ul>
+                    <h4>Challenges</h4><ul>${n.challenges.map(x=>`<li>${x}</li>`).join('')}</ul>
+                    <h4>Outreach Priorities</h4><ul>${n.priorities.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    }
 
     function renderAll(){ renderKPIs(); renderFunnel(); renderTrend(); renderHealth(); renderNotes(); }
-
-    roleSel.addEventListener('change', renderAll); weekSel.addEventListener('change', renderAll);
+    roleSel.addEventListener('change', renderAll);
+    weekSel.addEventListener('change', renderAll);
     document.getElementById('exportBtn').addEventListener('click',()=>window.print());
 
-    // Initial render
+    // Initial render (starts at 27 Oct by design)
     renderAll();
   </script>
 </body>
