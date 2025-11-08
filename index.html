@@ -11,64 +11,46 @@
   <style>
     :root{ --brand:#E3000F; --bg:#f7f7f9; --panel:#ffffff; --ink:#1a1a1a; --muted:#757575; --ok:#16a34a; --warn:#f59e0b; --bad:#ef4444; --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.06); }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-    .container{max-width:1200px;margin:0 auto;padding:28px}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .container{max-width:1200px;margin:0 auto;padding:24px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
     .brand{display:flex;align-items:center;gap:12px}
     .logo{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;font-weight:700}
     .title h1{font-size:20px;margin:0}
     .title .sub{font-size:12px;color:var(--muted)}
     .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    select, .btn{appearance:none;border:1px solid #e6e6ea;background:#fff;border-radius:10px;padding:10px 12px;font:inherit}
+    select, .btn{appearance:none;border:1px solid #e6e6ea;background:#fff;border-radius:10px;padding:9px 10px;font:inherit}
     .btn{background:var(--brand);color:#fff;border:none;box-shadow:var(--shadow);cursor:pointer}
-
-    .grid{display:grid;gap:16px}
+    .grid{display:grid;gap:14px}
     .grid.kpis{grid-template-columns:repeat(6,minmax(0,1fr))}
     @media (max-width:1100px){.grid.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
     @media (max-width:640px){.grid.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-
     .card{background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .card.pad{padding:18px}
-
-    .kpi{display:flex;flex-direction:column;gap:6px}
+    .card.pad{padding:16px}
+    .kpi{display:flex;flex-direction:column;gap:4px}
     .kpi .label{font-size:12px;color:var(--muted)}
-    .kpi .value{font-size:28px;font-weight:700}
-    .kpi .delta{font-size:12px}
-    .delta.up{color:var(--ok)}
-    .delta.down{color:var(--bad)}
-
-    .section{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:16px}
+    .kpi .value{font-size:26px;font-weight:700}
+    .section{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:14px}
     @media (max-width:960px){.section{grid-template-columns:1fr}}
-
-    .table{width:100%;border-collapse:separate;border-spacing:0 6px;table-layout:fixed}
-    .table th{font-size:12px;color:var(--muted);text-align:center;padding:8px 6px}
-    .table td{background:#fff;padding:8px 6px;text-align:center;word-wrap:break-word}
-    .table tr td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px;text-align:left}
-    .table tr td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px;text-align:left}
-    .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:600}
+    .table{width:100%;border-collapse:separate;border-spacing:0 4px;table-layout:fixed}
+    .table th{font-size:12px;color:var(--muted);text-align:center;padding:6px}
+    .table td{background:#fff;padding:6px;text-align:center;word-wrap:break-word}
+    .table tr td:first-child{border-top-left-radius:10px;border-bottom-left-radius:10px;text-align:left}
+    .table tr td:last-child{border-top-right-radius:10px;border-bottom-right-radius:10px;text-align:left}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 7px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
     .ok{background:rgba(22,163,74,.12);color:var(--ok)}
     .warn{background:rgba(245,158,11,.12);color:var(--warn)}
     .bad{background:rgba(239,68,68,.12);color:var(--bad)}
     .new{background:#fff;color:var(--muted);border:1px solid #e5e7eb}
     .filled{background:var(--brand);color:#fff}
-
-    footer{margin:28px 0;color:var(--muted);font-size:12px;text-align:center}
-    .notes h4{margin:8px 0 6px 0}
-    .notes ul{margin:0 0 12px 0;padding-left:18px}
-
-    @media print{
-      header .toolbar{display:none}
-      body{background:#fff}
-      .card{box-shadow:none}
-    }
+    .error{display:none;margin:10px 0;padding:8px 10px;border-radius:10px;background:#fff3cd;color:#7a5d00;border:1px solid #ffe69c}
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <div class="brand">
-        <div class="logo" aria-label="pplwise">pw</div>
+        <div class="logo">pw</div>
         <div class="title">
           <h1>Recruiting Performance Dashboard</h1>
           <div class="sub">Live view · powered by pplwise · <span id="lastUpdated"></span></div>
@@ -78,361 +60,166 @@
         <select id="roleSelect" title="Select role">
           <option value="all">All roles</option>
         </select>
-        <select id="weekSelect" title="Select week">
-          <option value="latest">Latest week</option>
-        </select>
+        <select id="weekSelect" title="Select week"></select>
         <button class="btn" id="exportBtn">Export as PDF</button>
       </div>
     </header>
+
+    <div id="err" class="error"></div>
 
     <div class="grid kpis" id="kpiGrid"></div>
 
     <div class="section">
       <div class="card pad">
-        <h3 style="margin:0 0 12px 0;font-size:14px;color:var(--muted)">Recruiting Activity</h3>
+        <h3 style="margin:0 0 10px 0;font-size:14px;color:var(--muted)">Recruiting Activity</h3>
         <canvas id="funnelChart" height="200"></canvas>
       </div>
       <div class="card pad">
-        <h3 style="margin:0 0 12px 0;font-size:14px;color:var(--muted)">Weekly Activity</h3>
+        <h3 style="margin:0 0 10px 0;font-size:14px;color:var(--muted)">Weekly Activity</h3>
         <canvas id="trendChart" height="200"></canvas>
       </div>
     </div>
 
-    <div class="card pad" style="margin-top:16px">
-      <h3 style="margin:0 0 12px 0;font-size:14px;color:var(--muted)">Pipeline Health</h3>
+    <div class="card pad" style="margin-top:14px">
+      <h3 style="margin:0 0 10px 0;font-size:14px;color:var(--muted)">Pipeline Health</h3>
       <table class="table" id="healthTable">
         <colgroup>
-          <!-- No Outreach column; give Comment plenty of space -->
-          <col style="width:15%">
-          <col style="width:10%">
-          <col style="width:7%">
-          <col style="width:7%">
-          <col style="width:7%">
-          <col style="width:7%">
-          <col style="width:7%">
-          <col style="width:8%">
-          <col style="width:33%">
+          <col style="width:18%"><col style="width:10%">
+          <col style="width:5%"><col style="width:5%"><col style="width:5%"><col style="width:5%"><col style="width:5%"><col style="width:5%">
+          <col style="width:42%">
         </colgroup>
         <thead>
-          <tr>
-            <th>Role</th><th>Health</th><th>DC</th><th>HM IV</th><th>Task</th><th>Final</th><th>Offer</th><th>Hired</th><th>Comment</th>
-          </tr>
+          <tr><th>Role</th><th>Health</th><th>DC</th><th>HM IV</th><th>Task</th><th>Final</th><th>Offer</th><th>Hired</th><th>Notes</th></tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
 
-    <div class="card pad notes" style="margin-top:16px">
-      <h3 style="margin:0 0 12px 0;font-size:14px;color:var(--muted)">Highlights / Challenges / Outreach Priorities</h3>
+    <div class="card pad" style="margin-top:14px">
+      <h3 style="margin:0 0 10px 0;font-size:14px;color:var(--muted)">Highlights / Challenges / Outreach Priorities</h3>
       <div id="notes"></div>
     </div>
-
-    <footer>
-      © <span id="year"></span> pplwise
-    </footer>
   </div>
 
-  <script>
-    /*
-      === HOW TO EDIT ===
-      1) Weekly Zahlen je Rolle in data.weekly[...] pflegen (Arrays sind chronologisch zu den Weeks).
-      2) Pipeline Health-Zeilen in data.health anpassen.
-      3) Die Seite startet automatisch mit der neuesten gültigen Woche (aktuell w/c 27 Oct 2025).
-    */
+<script>
+// ---- single source of truth ----
+const data = {
+  weeks: ["w/c 18 Aug 2025","w/c 25 Aug 2025","w/c 01 Sep 2025","w/c 08 Sep 2025","w/c 15 Sep 2025","w/c 22 Sep 2025","w/c 29 Sep 2025","w/c 06 Oct 2025","w/c 13 Oct 2025","w/c 20 Oct 2025","w/c 27 Oct 2025","w/c 03 Nov 2025"],
+  roles: ["Account Executive SMB","Account Executive Corporate","Account Executive Enterprise","Account Executive Strategic","Solutions Engineer","Head of Sales","Team Lead Solutions Engineer"],
+  weekly: {
+    "Account Executive SMB": { Sourced:[60,22,48,10,13,0,20,0,0,0,0,0], Discovery:[0,9,6,4,7,2,1,0,0,0,0,0], HM:[0,3,2,0,0,2,0,0,0,0,0,0], Case:[0,0,0,4,4,0,2,0,0,0,0,0], CEO:[0,0,0,0,0,2,0,0,0,0,0,0], Offer:[0,0,0,0,0,0,1,0,0,0,0,0], Hired:[0,0,0,0,0,0,0,1,0,0,0,0] },
+    "Account Executive Corporate": { Sourced:[0,0,0,0,0,0,0,16,0,0,21,11], Discovery:[0,0,0,0,0,0,0,9,5,2,3,2], HM:[0,0,0,0,0,0,0,3,1,5,1,0], Case:[0,0,0,0,0,0,0,0,3,1,0,0], CEO:[0,0,0,0,0,0,0,0,0,0,0,0], Offer:[0,0,0,0,0,0,0,2,0,0,0,0], Hired:[0,0,0,0,0,0,0,0,1,1,0,0] },
+    "Account Executive Enterprise": { Sourced:[31,43,11,0,0,63,20,0,0,0,0,18], Discovery:[0,10,4,0,0,5,5,0,0,0,0,0], HM:[0,5,6,0,0,2,2,0,0,0,0,0], Case:[0,0,2,2,1,1,0,0,0,0,0,0], CEO:[0,0,0,2,0,0,0,0,0,0,0,0], Offer:[0,0,0,2,0,0,0,0,0,0,0,0], Hired:[0,0,0,0,1,0,0,0,0,0,0,0] },
+    "Account Executive Strategic": { Sourced:[39,29,0,0,15,3,20,0,0,0,17,6], Discovery:[0,6,4,4,3,5,4,2,2,2,2,1], HM:[0,0,4,2,2,0,1,1,1,1,0,1], Case:[0,0,0,0,0,4,0,2,0,2,0,0], CEO:[0,0,0,0,0,0,1,0,0,0,0,0], Offer:[0,0,0,0,0,0,0,0,0,0,0,1], Hired:[0,0,0,0,0,0,0,0,0,0,0,0] },
+    "Solutions Engineer": { Sourced:[0,0,0,0,0,0,0,0,0,0,0,0], Discovery:[0,0,0,0,0,0,0,0,0,0,0,0], HM:[0,0,0,0,0,0,0,0,0,0,0,0], Case:[0,0,0,0,0,0,0,0,0,0,0,0], CEO:[0,0,0,0,0,0,0,0,0,0,0,0], Offer:[0,0,0,0,0,0,0,0,0,0,0,0], Hired:[0,0,0,0,0,0,0,0,0,0,0,0] },
+    "Head of Sales": { Sourced:[0,0,0,0,0,0,0,0,0,0,0,0], Discovery:[0,0,0,0,0,0,0,0,0,0,0,1], HM:[0,0,0,0,0,0,0,0,0,0,0,0], Case:[0,0,0,0,0,0,0,0,0,0,0,0], CEO:[0,0,0,0,0,0,0,0,0,0,0,0], Offer:[0,0,0,0,0,0,0,0,0,0,0,0], Hired:[0,0,0,0,0,0,0,0,0,0,0,0] },
+    "Team Lead Solutions Engineer": { Sourced:[0,0,0,0,0,0,0,0,25,0,0,0], Discovery:[0,0,0,0,0,0,0,0,2,8,2,2], HM:[0,0,0,0,0,0,0,0,0,1,0,3], Case:[0,0,0,0,0,0,0,0,0,0,0,0], CEO:[0,0,0,0,0,0,0,0,0,0,0,0], Offer:[0,0,0,0,0,0,0,0,0,0,0,0], Hired:[0,0,0,0,0,0,0,0,0,0,0,0] }
+  },
+  health: [
+    {role:"Account Executive SMB",status:"filled",discovery:0,hm:0,task:0,final:0,offer:0,hired:"1/1",note:""},
+    {role:"Solutions Engineer",status:"hold",discovery:3,hm:1,task:1,final:0,offer:0,hired:"0/1",note:"on hold since 29th Oct., candidates are informed"},
+    {role:"Account Executive Enterprise",status:"new",discovery:2,hm:0,task:0,final:0,offer:0,hired:"1/2",note:"re-opened due to resignation"},
+    {role:"Account Executive Strategic",status:"ok",discovery:4,hm:1,task:0,final:0,offer:1,hired:"0/2",note:"Offer extended to Simon Wester, pot. close next week."},
+    {role:"Account Executive Corporate",status:"ok",discovery:3,hm:2,task:1,final:0,offer:0,hired:"2/3",note:"Beginning of November recalibration with Basti regarding role requirements."},
+    {role:"Head of Sales",status:"ok",discovery:7,hm:0,task:3,final:0,offer:0,hired:"0/1",note:"2 strong female candidates in Case"},
+    {role:"Team Lead Solutions Engineer",status:"ok",discovery:3,hm:4,task:0,final:0,offer:0,hired:"0/1",note:"2 candidates to be interviewed by Marian (2nd opinion)"}
+  ],
+  notes: {
+    highlights: ["Offer extended to Simon Wester"],
+    challenges: [],
+    priorities: ["1 Team Lead Solutions Engineer","2 Head of Sales","3 Account Executive"]
+  }
+};
 
-    // ---------- DATA ----------
-    const data = {
-      weeks:[
-        "w/c 18 Aug 2025","w/c 25 Aug 2025","w/c 01 Sep 2025","w/c 08 Sep 2025","w/c 15 Sep 2025",
-        "w/c 22 Sep 2025","w/c 29 Sep 2025","w/c 06 Oct 2025","w/c 13 Oct 2025","w/c 20 Oct 2025",
-        "w/c 27 Oct 2025","w/c 03 Nov 2025","w/c 10 Nov 2025","w/c 17 Nov 2025","w/c 24 Nov 2025"
-      ],
-      roles:[
-        "Team Lead Solutions Engineer",
-        "Account Executive SMB","Account Executive Corporate","Account Executive Enterprise","Account Executive Strategic",
-        "Solutions Engineer","Head of Sales",
-        "AI Engineer"
-      ],
-      weekly:{
-        "Team Lead Solutions Engineer":{
-          Outreach:[0,0,0,0,0,0,0,0,25,41,0,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,0,2,6,7,0,0,0,0],
-          HM:[0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],
-          Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Account Executive Enterprise":{
-          Sourced:[31,43,11,0,0,63,20,0,0,0,0,0,0,0,0],
-          Discovery:[0,10,4,0,0,5,5,0,0,0,0,0,0,0,0],
-          HM:[0,5,6,0,0,2,2,0,0,0,0,0,0,0,0],
-          Case:[0,0,2,2,1,1,0,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,2,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,2,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,1,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Account Executive SMB":{
-          Sourced:[60,22,48,10,13,0,20,0,0,0,0,0,0,0,0],
-          Discovery:[0,9,6,4,7,2,1,0,0,0,0,0,0,0,0],
-          HM:[0,3,2,0,0,2,0,0,0,0,0,0,0,0,0],
-          Case:[0,0,0,2,2,0,1,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,0,0,2,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
-        },
-        "Account Executive Strategic":{
-          Outreach:[39,29,0,0,15,3,20,0,0,0,17,0,0,0,0],
-          Discovery:[0,6,4,4,3,5,4,2,2,2,2,0,0,0,0],
-          HM:[0,0,4,2,2,0,1,1,1,1,0,0,0,0,0],
-          Case:[0,0,0,0,0,2,0,1,0,1,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,1,0,0,0,1,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Account Executive Corporate":{
-          Sourced:[0,0,0,0,0,0,0,16,0,0,21,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,9,5,2,3,0,0,0,0],
-          HM:[0,0,0,0,0,0,0,3,1,5,1,0,0,0,0],
-          Case:[0,0,0,0,0,0,0,0,3,1,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,2,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Solutions Engineer":{
-          Outreach:[0,0,0,0,0,0,0,106,14,15,0,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,0,3,4,3,0,0,0,0],
-          HM:[0,0,0,0,0,0,0,0,0,2,1,0,0,0,0],
-          Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
-        "Head of Sales":{
-          Outreach:[0,0,0,0,0,0,0,28,0,0,0,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,0,6,8,2,0,0,0,0],
-          HM:[0,0,0,0,0,0,0,0,0,1,4,0,0,0,0],
-          Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          CEO:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-          Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        },
+// ---- utils ----
+const err = document.getElementById('err');
+window.addEventListener('error', e => { err.style.display='block'; err.textContent = e.message; });
+document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
 
-        "AI Engineer":{
-          /* EDIT: trage ab Index 10 (w/c 27 Oct 2025) deine Zahlen ein */
-          Sourced:  [0,0,0,0,0,0,0,0,0,0, 17,0,0,0,0],
-          Discovery:[0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0],
-          HM:       [0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0],
-          Case:     [0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0],
-          CEO:      [0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0],
-          Offer:    [0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0],
-          Hired:    [0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0]
-        }
-      },
+const roleSel=document.getElementById('roleSelect');
+data.roles.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; roleSel.appendChild(o); });
+const weekSel=document.getElementById('weekSelect');
+data.weeks.forEach((w,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=w; weekSel.appendChild(o); });
+weekSel.value=String(data.weeks.length-1);
 
-      health:[
-        {role:"Account Executive Enterprise", status:"filled", discovery:0, hm:0, task:0, final:0, offer:0, hired:"1/1", note:""},
-        {role:"Account Executive SMB",        status:"filled", discovery:0, hm:0, task:0, final:0, offer:0, hired:"1/1", note:""},
-        {role:"Account Executive Strategic",  status:"ok",     discovery:2, hm:1, task:0, final:1, offer:1, hired:"0/2", note:"Simon Wester will be offered after the 5th of Nov., Daniel Oh was a no from Bene. Role needs an outreach push"},
-        {role:"Account Executive Corporate",  status:"ok",     discovery:6, hm:0, task:1, final:0, offer:0, hired:"2/3", note:"Beginning of November recalibration with Basti regarding role requirements. Role needs an outreach push"},
-        {role:"Solutions Engineer",           status:"hold",   discovery:3, hm:1, task:1, final:0, offer:0, hired:"0/1", note:""},
-        {role:"Team Lead Solutions Engineer", status:"ok",     discovery:5, hm:7, task:0, final:0, offer:0, hired:"0/1", note:"Strong Pipeline"},
-        {role:"Head of Sales",                status:"ok",     discovery:3, hm:0, task:3, final:0, offer:0, hired:"0/1", note:"Case to be provided be EoD Monday from Simon"},
-        {role:"AI Engineer",                  status:"new",    discovery:6, hm:0, task:0, final:0, offer:0, hired:"0/1", note:""}
-      ],
+const asAll = v => !v || v==='all' || !data.roles.includes(v);
+const safe = n => Number.isFinite(+n) ? +n : 0;
 
-      notes:{
-        highlights:["2 strong female candidates for HoS in CS, TL SE quick turnaround"],
-        challenges:["Need HoS Case asap"],
-        priorities:["1 Team Lead SE", "2 Head of Sales", "3 AE Strategic / Corporate", "4 AI Engineer"]
-      }
-    };
-    // ---------- END DATA ----------
+function totalsFor(weekIndex, role){
+  const keys=['Sourced','Discovery','HM','Case','CEO','Offer','Hired'];
+  const t=Object.fromEntries(keys.map(k=>[k,0]));
+  const roles = asAll(role) ? data.roles : [role];
+  roles.forEach(r=>{ keys.forEach(k=>{ t[k]+=safe((data.weekly[r][k]||[])[weekIndex]); }); });
+  return t;
+}
 
-    // Timestamp & footer
-    const lastUpdatedEl = document.getElementById('lastUpdated');
-    if(lastUpdatedEl) lastUpdatedEl.textContent = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
-    document.getElementById('year').textContent = new Date().getFullYear();
+// KPIs
+const kpiGrid=document.getElementById('kpiGrid');
+const kpis=[{key:'Sourced',label:'Candidates Sourced'},{key:'Discovery',label:'Discovery Calls'},{key:'HM',label:'HM Interviews'},{key:'Case',label:'Case Studies'},{key:'Offer',label:'Offers'},{key:'Hired',label:'Hires'}];
 
-    // Helpers
-    const monthMap = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-    function weekLabelToDate(label){
-      const m=label.match(/w\/c (\d{2}) (\w{3}) (\d{4})/);
-      if(!m) return new Date(0);
-      const [_,dd,mon,yyyy]=m;
-      return new Date(+yyyy, monthMap[mon], +dd);
-    }
-    function currentMonday(){
-      const t=new Date();
-      const d=new Date(t.getFullYear(), t.getMonth(), t.getDate());
-      const dow=d.getDay(); // 0=Sun ... 6=Sat
-      const diff=(dow===0?-6:1-dow);
-      d.setDate(d.getDate()+diff);
-      d.setHours(0,0,0,0);
-      return d;
-    }
+function renderKPIs(){
+  const t=totalsFor(+weekSel.value, roleSel.value);
+  kpiGrid.innerHTML='';
+  kpis.forEach(k=>{
+    const el=document.createElement('div');
+    el.className='card pad kpi';
+    el.innerHTML=`<div class="label">${k.label}</div><div class="value">${t[k.key]}</div>`;
+    kpiGrid.appendChild(el);
+  });
+}
 
-    // Normalize: Outreach -> Sourced (falls „Sourced“ fehlt)
-    (function normalize(){
-      Object.keys(data.weekly).forEach(role=>{
-        const r = data.weekly[role];
-        if(r && r.Outreach){
-          if(!r.Sourced){ r.Sourced = r.Outreach.slice(); }
-          else { r.Sourced = r.Sourced.map((v,i)=>v + (r.Outreach[i]||0)); }
-        }
-      });
-    })();
+let funnelChart, trendChart;
+function renderFunnel(){
+  const t=totalsFor(+weekSel.value, roleSel.value);
+  const stages=['Sourced','Discovery','HM','Case','CEO','Offer','Hired'];
+  const vals=stages.map(s=>t[s]);
+  if(funnelChart) funnelChart.destroy();
+  funnelChart=new Chart(document.getElementById('funnelChart'),{
+    type:'bar',
+    data:{labels:stages,datasets:[{data:vals,backgroundColor:stages.map((_,i)=>`hsl(${(i*36)%360} 80% 65% / .9)`),borderRadius:10}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+  });
+}
 
-    // Valid weeks up to current Monday
-    const allWeekDates = data.weeks.map(weekLabelToDate);
-    const cutoff = currentMonday();
-    const validWeekIdx = allWeekDates.map((dt,i)=>({dt,i})).filter(o=>o.dt<=cutoff).map(o=>o.i);
+function renderTrend(){
+  const stages=['Sourced','Discovery','HM','Offer','Hired'];
+  const roles = asAll(roleSel.value) ? data.roles : [roleSel.value];
+  const series=Object.fromEntries(stages.map(s=>[s,Array(data.weeks.length).fill(0)]));
+  roles.forEach(r=>{ stages.forEach(s=>{ (data.weekly[r][s]||[]).forEach((v,i)=>series[s][i]+=safe(v)); }); });
+  const datasets=stages.map((s,i)=>({label:s,data:series[s],tension:.35,fill:false,borderColor:`hsl(${i*70} 70% 45%)`,pointRadius:2.5}));
+  if(trendChart) trendChart.destroy();
+  trendChart=new Chart(document.getElementById('trendChart'),{ type:'line', data:{labels:data.weeks,datasets}, options:{plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true}}} });
+}
 
-    // Selects
-    const roleSel = document.getElementById('roleSelect');
-    const weekSel = document.getElementById('weekSelect');
-    data.roles.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; roleSel.appendChild(o); });
-    weekSel.innerHTML='';
-    [...validWeekIdx].reverse().forEach(i=>{ const o=document.createElement('option'); o.value=String(i); o.textContent=data.weeks[i]; weekSel.appendChild(o); });
-    // Default to latest valid week (Berlin time today: Fri, 31 Oct 2025 → latest is w/c 27 Oct 2025)
-    weekSel.value = String(validWeekIdx[validWeekIdx.length - 1]);
+function renderHealth(){
+  const tbody=document.querySelector('#healthTable tbody');
+  tbody.innerHTML='';
+  const rows = data.health.filter(h => asAll(roleSel.value) || h.role===roleSel.value);
+  rows.forEach(h=>{
+    const tr=document.createElement('tr');
+    const tag = h.status==='filled'?'🏁 Filled': h.status==='ok'?'Healthy': h.status==='warn'?'Attention': h.status==='bad'?'Critical': h.status==='new'?'○ New': h.status;
+    const cls = h.status==='filled'?'filled': h.status==='ok'?'ok': h.status==='warn'?'warn': h.status==='bad'?'bad':'new';
+    tr.innerHTML = `<td>${h.role}</td><td><span class="badge ${cls}">${tag}</span></td>
+      <td>${h.discovery||0}</td><td>${h.hm||0}</td><td>${h.task||0}</td><td>${h.final||0}</td><td>${h.offer||0}</td><td>${h.hired||0}</td><td style="text-align:left">${h.note||''}</td>`;
+    tbody.appendChild(tr);
+  });
+}
 
-    // KPI config
-    const kpis = [
-      {key:'Sourced',  label:'Candidates Sourced'},
-      {key:'Discovery',label:'Discovery Calls'},
-      {key:'HM',       label:'HM Interviews'},
-      {key:'Case',     label:'Case Studies'},
-      {key:'Offer',    label:'Offers'},
-      {key:'Hired',    label:'Hires'}
-    ];
+function renderNotes(){
+  const n=data.notes;
+  document.getElementById('notes').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><h4>Highlights</h4><ul>${n.highlights.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><h4>Challenges</h4><ul>${n.challenges.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div><h4>Outreach Priorities</h4><ul>${n.priorities.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    </div>`;
+}
 
-    const kpiGrid = document.getElementById('kpiGrid');
-    function calcDelta(curr, prev){ if(prev===0) return {txt:'–', cls:''}; const pct=((curr-prev)/prev)*100; return {txt:(pct>0?'+':'')+pct.toFixed(1)+'%', cls:pct>=0?'up':'down'}; }
-
-    function aggregate(weekIndex, role){
-      const keys=['Sourced','Discovery','HM','Case','CEO','Offer','Hired'];
-      const totals=Object.fromEntries(keys.map(k=>[k,0]));
-      const prevTotals=Object.fromEntries(keys.map(k=>[k,0]));
-      const roles = role==='all'? data.roles : [role];
-      roles.forEach(r=>{
-        keys.forEach(k=>{
-          totals[k]+= (data.weekly[r]?.[k]?.[weekIndex]||0);
-          if(weekIndex>0) prevTotals[k]+= (data.weekly[r]?.[k]?.[weekIndex-1]||0);
-        });
-      });
-      return {totals, prevTotals};
-    }
-
-    let funnelChart, trendChart;
-    const funnelCtx=document.getElementById('funnelChart');
-    const trendCtx=document.getElementById('trendChart');
-
-    function renderKPIs(){
-      const weekIndex=+weekSel.value;
-      const role=roleSel.value;
-      const {totals, prevTotals}=aggregate(weekIndex, role);
-      kpiGrid.innerHTML='';
-      kpis.forEach(k=>{
-        const curr=totals[k.key];
-        const prev=prevTotals[k.key]||0;
-        const d=calcDelta(curr, prev);
-        const el=document.createElement('div');
-        el.className='card pad kpi';
-        el.innerHTML=`<div class="label">${k.label}</div><div class="value">${curr}</div><div class="delta ${d.cls}">${d.txt} vs last wk</div>`;
-        kpiGrid.appendChild(el);
-      });
-    }
-
-    function renderFunnel(){
-      const weekIndex=+weekSel.value;
-      const role=roleSel.value;
-      const {totals}=aggregate(weekIndex, role);
-      const stages=['Sourced','Discovery','HM','Case','CEO','Offer','Hired'];
-      const vals=stages.map(s=>totals[s]);
-      const bg=stages.map((_,i)=>`hsl(${(i*36)%360}deg 80% 65% / .9)`);
-      if(funnelChart) funnelChart.destroy();
-      funnelChart=new Chart(funnelCtx,{
-        type:'bar',
-        data:{labels:stages, datasets:[{label:'Count', data:vals, backgroundColor:bg, borderRadius:10}]},
-        options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, grid:{color:'rgba(0,0,0,.05)'}}}}
-      });
-    }
-
-    function renderTrend(){
-      const role=roleSel.value;
-      const stages=['Sourced','Discovery','HM','Offer','Hired'];
-      const roles = role==='all'? data.roles : [role];
-      const series=Object.fromEntries(stages.map(s=>[s,Array(data.weeks.length).fill(0)]));
-      roles.forEach(r=>{ stages.forEach(s=>{ (data.weekly[r][s]||[]).forEach((v,i)=>series[s][i]+=v); }); });
-      const labels=validWeekIdx.map(i=>data.weeks[i]);
-      const datasets=stages.map((s,idx)=>({
-        label:s,
-        data:validWeekIdx.map(i=>series[s][i]),
-        tension:.35, fill:false,
-        borderColor:`hsl(${(idx*70)%360}deg 70% 45%)`,
-        pointRadius:2.5
-      }));
-      if(trendChart) trendChart.destroy();
-      trendChart=new Chart(trendCtx,{
-        type:'line',
-        data:{labels, datasets},
-        options:{ responsive:true, plugins:{legend:{position:'bottom'}}, scales:{y:{beginAtZero:true, grid:{color:'rgba(0,0,0,.05)'}}}}
-      });
-    }
-
-    function renderHealth(){
-      const tbody=document.querySelector('#healthTable tbody');
-      tbody.innerHTML='';
-      const roleFilter=roleSel.value;
-      const rows=(data.health||[]).filter(h=>roleFilter==='all'||h.role===roleFilter);
-      rows.forEach(h=>{
-        const tr=document.createElement('tr');
-        let label,cls;
-        switch(h.status){
-          case 'ok':label='Healthy';cls='ok';break;
-          case 'warn':label='Attention';cls='warn';break;
-          case 'bad':
-          case 'crit':label='Critical';cls='bad';break;
-          case 'new':label='○ New';cls='new';break;
-          case 'filled':label='🏁 Filled';cls='filled';break;
-          default:label=h.status;cls='new';
-        }
-        tr.innerHTML=`<td>${h.role}</td>
-          <td><span class="badge ${cls}">${label}</span></td>
-          <td>${h.discovery??0}</td>
-          <td>${h.hm??0}</td>
-          <td>${h.task??0}</td>
-          <td>${h.final??0}</td>
-          <td>${h.offer??0}</td>
-          <td>${h.hired??0}</td>
-          <td style="text-align:left">${h.note||''}</td>`;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function renderNotes(){
-      const el=document.getElementById('notes');
-      const n=data.notes||{highlights:[],challenges:[],priorities:[]};
-      el.innerHTML = `
-        <h4>Highlights</h4>
-        <ul>${(n.highlights||[]).map(x=>`<li>${x}</li>`).join('')}</ul>
-        <h4>Challenges</h4>
-        <ul>${(n.challenges||[]).map(x=>`<li>${x}</li>`).join('')}</ul>
-        <h4>Outreach Priorities</h4>
-        <ul>${(n.priorities||[]).map(x=>`<li>${x}</li>`).join('')}</ul>
-      `;
-    }
-
-    function renderAll(){ renderKPIs(); renderFunnel(); renderTrend(); renderHealth(); renderNotes(); }
-
-    // Events
-    document.getElementById('exportBtn').addEventListener('click',()=>window.print());
-    roleSel.addEventListener('change', renderAll);
-    weekSel.addEventListener('change', renderAll);
-
-    // Initial render
-    renderAll();
-  </script>
+function renderAll(){ renderKPIs(); renderFunnel(); renderTrend(); renderHealth(); renderNotes(); }
+document.getElementById('exportBtn').addEventListener('click',()=>window.print());
+roleSel.addEventListener('change', renderAll);
+weekSel.addEventListener('change', renderAll);
+renderAll();
+</script>
 </body>
 </html>
