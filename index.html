@@ -109,7 +109,7 @@ const data = {
     "w/c 08 Sep 2025","w/c 15 Sep 2025","w/c 22 Sep 2025",
     "w/c 29 Sep 2025","w/c 06 Oct 2025","w/c 13 Oct 2025",
     "w/c 20 Oct 2025","w/c 27 Oct 2025","w/c 03 Nov 2025",
-    "w/c 10 Nov 2025"
+    "w/c 10 Nov 2025","w/c 17 Nov 2025"
   ],
   roles: [
     "Account Executive SMB","Account Executive Corporate",
@@ -118,75 +118,87 @@ const data = {
   ],
   weekly: {
     "Account Executive SMB": {
-      Sourced:[60,22,48,10,13,0,20,0,0,0,0,0,0],
-      Discovery:[0,9,6,4,7,2,1,0,0,0,0,0,0],
-      HM:[0,3,2,0,0,2,0,0,0,0,0,0,0],
-      Case:[0,0,0,2,2,0,1,0,0,0,0,0,0],
-      Offer:[0,0,0,0,0,0,0,0,0,0,1,0,0],
-      Hired:[0,0,0,0,0,0,0,1,0,0,0,0,0]
+      Sourced:[60,22,48,10,13,0,20,0,0,0,0,0,0,0],
+      Discovery:[0,9,6,4,7,2,1,0,0,0,0,0,0,0],
+      HM:[0,3,2,0,0,2,0,0,0,0,0,0,0,0],
+      Case:[0,0,0,2,2,0,1,0,0,0,0,0,0,0],
+      Offer:[0,0,0,0,0,0,0,0,0,0,1,0,0,0],
+      Hired:[0,0,0,0,0,0,0,1,0,0,0,0,0,0]
     },
+
     "Account Executive Corporate": {
-      Sourced:[0,0,0,0,0,0,0,16,0,21,11,0,24],
-      Discovery:[0,0,0,0,0,0,0,9,5,2,3,1,2],
-      HM:[0,0,0,0,0,0,0,0,0,0,0,0,2],
-      Case:[0,0,0,0,0,0,0,0,0,0,0,0,1],
-      Offer:[0,0,0,0,0,0,0,2,0,0,0,0,0],
-      Hired:[0,0,0,0,0,0,0,0,1,1,0,0,0]
+      Sourced:[0,0,0,0,0,0,0,16,0,21,11,0,24,0],
+      Discovery:[0,0,0,0,0,0,0,9,5,2,3,1,2,1],   // w14: DC = 1
+      HM:[0,0,0,0,0,0,0,0,0,0,0,0,0,3],          // w14: HM = 3
+      Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      Offer:[0,0,0,0,0,0,0,2,0,0,0,0,0,0],
+      Hired:[0,0,0,0,0,0,0,0,1,1,0,0,0,0]
     },
+
     "Account Executive Enterprise": {
-      Sourced:[31,43,11,0,0,63,20,0,0,0,0,16,47],
-      Discovery:[0,10,4,0,0,5,5,0,2,0,0,0,1],
-      HM:[0,5,6,0,0,2,2,0,0,0,0,1,0],
-      Case:[0,0,2,2,1,1,0,0,0,0,0,0,0],
-      Offer:[0,0,0,2,0,0,0,0,0,0,0,0,0],
-      Hired:[0,0,0,0,1,0,0,0,0,0,0,0,0]
+      Sourced:[31,43,11,0,0,63,20,0,0,0,0,16,47,0],
+      Discovery:[0,10,4,0,0,5,5,0,2,0,0,0,1,0],   // w14: 0
+      HM:[0,5,6,0,0,2,2,0,0,0,0,1,0,0],           // w14: 0
+      Case:[0,0,2,2,1,1,0,0,0,0,0,0,0,0],
+      Offer:[0,0,0,2,0,0,0,0,0,0,0,0,0,0],
+      Hired:[0,0,0,0,1,0,0,0,0,0,0,0,0,0]
     },
+
     "Account Executive Strategic": {
-      Sourced:[39,29,0,0,15,3,20,0,0,0,0,17,27],
-      Discovery:[0,6,4,4,3,5,4,2,2,2,2,2,0],
-      HM:[0,0,4,2,0,1,0,1,0,0,0,0,0],
-      Case:[0,0,0,0,0,0,0,0,0,0,0,1,0],
-      Offer:[0,0,0,0,0,0,0,0,0,0,0,1,0],
-      Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0]
+      Sourced:[39,29,0,0,15,3,20,0,0,0,0,17,27,0],
+      Discovery:[0,6,4,4,3,5,4,2,2,2,2,2,0,1],    // w14: DC = 1
+      HM:[0,0,4,2,0,1,0,1,0,0,0,0,0,1],           // w14: HM = 1
+      Case:[0,0,0,0,0,0,0,0,0,0,0,1,0,1],         // w14: Task/Case = 1
+      Offer:[0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+      Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
+
     "Solutions Engineer": {
-      Sourced:[0,0,0,0,0,0,0,0,0,106,14,0,0],
-      Discovery:[0,0,0,0,0,0,0,0,0,2,0,0,0],
-      HM:[0,0,0,0,0,0,0,0,0,0,0,0,0],
-      Case:[0,0,0,0,0,0,0,0,0,0,0,0,0],
-      Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0],
-      Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0]
+      Sourced:[0,0,0,0,0,0,0,0,0,106,14,0,0,0],
+      Discovery:[0,0,0,0,0,0,0,0,0,2,0,0,0,0],
+      HM:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
+
     "Head of Sales": {
-      Sourced:[0,0,0,0,0,0,0,28,0,0,6,0,1],
-      Discovery:[0,0,0,0,0,0,0,0,0,0,0,0,1],
-      HM:[0,0,0,0,0,0,0,0,0,0,1,4,1],
-      Case:[0,0,0,0,0,0,0,0,0,0,0,2,2],
-      Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0],
-      Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0]
+      Sourced:[0,0,0,0,0,0,0,28,0,0,6,0,1,0],
+      Discovery:[0,0,0,0,0,0,0,0,0,0,0,0,1,5],    // w14: DC = 5
+      HM:[0,0,0,0,0,0,0,0,0,0,1,4,1,0],           // w14: HM = 0
+      Case:[0,0,0,0,0,0,0,0,0,0,0,2,2,1],         // w14: Task/Case = 1
+      Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     },
+
     "Team Lead Solutions Engineer": {
-      Sourced:[0,0,0,0,0,0,0,0,25,0,5,0,0],
-      Discovery:[0,0,0,0,0,0,0,0,2,8,2,2,2],
-      HM:[0,0,0,0,0,0,0,0,0,1,4,0,4],
-      Case:[0,0,0,0,0,0,0,0,0,0,0,0,0],
-      Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0],
-      Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0]
+      Sourced:[0,0,0,0,0,0,0,0,25,0,5,0,0,0],
+      Discovery:[0,0,0,0,0,0,0,0,2,8,2,2,2,0],    // w14: 0
+      HM:[0,0,0,0,0,0,0,0,0,1,4,0,4,0],           // w14: HM = 0
+      Case:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],         // w14: Task/Case = 0
+      Offer:[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      Hired:[0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     }
   },
+
   health: [
     {role:"Account Executive SMB",status:"filled",discovery:0,hm:0,task:0,final:0,offer:0,hired:"1/1",note:""},
-    {role:"Solutions Engineer",status:"hold",discovery:3,hm:1,task:1,final:0,offer:0,hired:"0/1",note:"on hold"},
-    {role:"Account Executive Enterprise",status:"ok",discovery:3,hm:0,task:0,final:0,offer:0,hired:"1/2",note:""},
-    {role:"Account Executive Strategic",status:"ok",discovery:4,hm:0,task:1,final:0,offer:1,hired:"0/2",note:"Simon Wester will sign the contract until Monday."},
-    {role:"Account Executive Corporate",status:"ok",discovery:1,hm:4,task:1,final:0,offer:0,hired:"2/3",note:""},
-    {role:"Head of Sales",status:"ok",discovery:5,hm:1,task:3,final:0,offer:0,hired:"0/1",note:""},
-    {role:"Team Lead Solutions Engineer",status:"ok",discovery:1,hm:2,task:2,final:1,offer:0,hired:"0/1",note:""}
+    {role:"Solutions Engineer",status:"hold",discovery:0,hm:0,task:0,final:0,offer:0,hired:"0/1",note:"on hold"},
+    {role:"Account Executive Enterprise",status:"ok",discovery:4,hm:1,task:0,final:0,offer:0,hired:"1/2",note:""},
+    {role:"Account Executive Strategic",status:"crit",discovery:1,hm:1,task:1,final:0,offer:0,hired:"1/2",note:""},
+    {role:"Account Executive Corporate",status:"ok",discovery:3,hm:2,task:1,final:0,offer:0,hired:"2/3",note:""},
+    {role:"Head of Sales",status:"ok",discovery:3,hm:3,task:0,final:1,offer:0,hired:"0/1",note:""},
+    {role:"Team Lead Solutions Engineer",status:"ok",discovery:1,hm:4,task:2,final:0,offer:0,hired:"0/1",note:""}
   ],
+
   notes: {
-    highlights: ["Simon Wester will sign until Monday, 100+ outreach for AE roles"],
-    challenges: ["Currently reduced hiring speed due to reallocation of hiring capacity"],
-    priorities: ["1 Team Lead Solutions Engineer","2 Head of Sales","3 Account Executive"]
+    highlights: [
+      ""
+    ],
+    challenges: ["none"],
+    priorities: ["1 Team Lead Solutions Engineer","2 Account Executive"]
+  }
+};
   }
 };
 // ---- utils ----
