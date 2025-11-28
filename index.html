@@ -103,12 +103,12 @@
     }
     
     .grid.kpis {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(7, minmax(0, 1fr));
     }
     
     @media (max-width: 1100px) {
       .grid.kpis {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
     
@@ -144,9 +144,27 @@
       font-weight: 700;
     }
     
+    .kpi .change {
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    
+    .kpi .change.positive {
+      color: var(--ok);
+    }
+    
+    .kpi .change.negative {
+      color: var(--bad);
+    }
+    
+    .kpi .change.neutral {
+      color: var(--muted);
+    }
+    
     .section {
       display: grid;
-      grid-template-columns: 1.1fr .9fr;
+      grid-template-columns: 1fr 1fr;
       gap: 14px;
       margin-top: 14px;
     }
@@ -154,6 +172,19 @@
     @media (max-width: 960px) {
       .section {
         grid-template-columns: 1fr;
+      }
+    }
+    
+    @media print {
+      body {
+        background: white;
+      }
+      .container {
+        max-width: 100%;
+        padding: 10px;
+      }
+      .btn {
+        display: none;
       }
     }
     
@@ -264,11 +295,11 @@
     <div class="section">
       <div class="card pad">
         <h3 style="margin:0 0 10px 0;font-size:14px;color:var(--muted)">Recruiting Activity</h3>
-        <canvas id="funnelChart" height="200"></canvas>
+        <canvas id="funnelChart" style="max-height:180px"></canvas>
       </div>
       <div class="card pad">
         <h3 style="margin:0 0 10px 0;font-size:14px;color:var(--muted)">Weekly Activity</h3>
-        <canvas id="trendChart" height="200"></canvas>
+        <canvas id="trendChart" style="max-height:180px"></canvas>
       </div>
     </div>
 
@@ -276,20 +307,20 @@
       <h3 style="margin:0 0 10px 0;font-size:14px;color:var(--muted)">Pipeline Health</h3>
       <table class="table" id="healthTable">
         <colgroup>
-          <col style="width:18%"><col style="width:10%">
-          <col style="width:5%"><col style="width:5%"><col style="width:5%"><col style="width:5%"><col style="width:5%"><col style="width:5%">
-          <col style="width:42%">
+          <col style="width:22%"><col style="width:8%">
+          <col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%">
+          <col style="width:12%"><col style="width:18%">
         </colgroup>
         <thead>
           <tr>
             <th>Role</th>
-            <th>Health</th>
             <th>DC</th>
             <th>HM IV</th>
             <th>Task</th>
             <th>Final</th>
             <th>Offer</th>
             <th>Hired</th>
+            <th>Status</th>
             <th>Notes</th>
           </tr>
         </thead>
@@ -297,7 +328,7 @@
       </table>
     </div>
 
-    <div class="card pad" style="margin-top:14px">
+    <div class="card pad" style="margin-top:14px" id="notesCard">
       <h3 style="margin:0 0 10px 0;font-size:14px;color:var(--muted)">Highlights / Challenges / Outreach Priorities</h3>
       <div id="notes"></div>
     </div>
@@ -311,7 +342,7 @@
         "w/c 08 Sep 2025", "w/c 15 Sep 2025", "w/c 22 Sep 2025",
         "w/c 29 Sep 2025", "w/c 06 Oct 2025", "w/c 13 Oct 2025",
         "w/c 20 Oct 2025", "w/c 27 Oct 2025", "w/c 03 Nov 2025",
-        "w/c 10 Nov 2025", "w/c 17 Nov 2025"
+        "w/c 10 Nov 2025", "w/c 17 Nov 2025", "w/c 24 Nov 2025"
       ],
       
       roles: [
@@ -326,76 +357,83 @@
       
       weekly: {
         "Account Executive SMB": {
-          Sourced: [60, 22, 48, 10, 13, 0, 20, 0, 0, 0, 0, 0, 0, 0],
-          Discovery: [0, 9, 6, 4, 7, 2, 1, 0, 0, 0, 0, 0, 0, 0],
-          HM: [0, 3, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0],
-          Case: [0, 0, 0, 2, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-          Hired: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+          Sourced: [60, 22, 48, 10, 13, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0],
+          Discovery: [0, 9, 6, 4, 7, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+          HM: [0, 3, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Case: [0, 0, 0, 2, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+          CEO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+          Hired: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
         },
         
         "Account Executive Corporate": {
-          Sourced: [0, 0, 0, 0, 0, 0, 0, 16, 0, 21, 11, 0, 24, 0],
-          Discovery: [0, 0, 0, 0, 0, 0, 0, 9, 5, 2, 3, 1, 2, 1],
-          HM: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          Offer: [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0],
-          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+          Sourced: [0, 0, 0, 0, 0, 0, 0, 16, 0, 21, 11, 0, 24, 0, 21],
+          Discovery: [0, 0, 0, 0, 0, 0, 0, 9, 5, 2, 3, 1, 2, 1, 0],
+          HM: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0],
+          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+          CEO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+          Offer: [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0],
+          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1]
         },
         
         "Account Executive Enterprise": {
-          Sourced: [31, 43, 11, 0, 0, 63, 20, 0, 0, 0, 0, 16, 47, 0],
-          Discovery: [0, 10, 4, 0, 0, 5, 5, 0, 2, 0, 0, 0, 1, 0],
-          HM: [0, 5, 6, 0, 0, 2, 2, 0, 0, 0, 0, 1, 0, 0],
-          Case: [0, 0, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-          Offer: [0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          Hired: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          Sourced: [31, 43, 11, 0, 0, 63, 20, 0, 0, 0, 0, 16, 47, 0, 22],
+          Discovery: [0, 10, 4, 0, 0, 5, 5, 0, 2, 0, 0, 0, 1, 0, 0],
+          HM: [0, 5, 6, 0, 0, 2, 2, 0, 0, 0, 0, 1, 0, 0, 0],
+          Case: [0, 0, 2, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          CEO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Offer: [0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Hired: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         },
         
         "Account Executive Strategic": {
-          Sourced: [39, 29, 0, 0, 15, 3, 20, 0, 0, 0, 0, 17, 27, 0],
-          Discovery: [0, 6, 4, 4, 3, 5, 4, 2, 2, 2, 2, 2, 0, 1],
-          HM: [0, 0, 4, 2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1],
-          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          Sourced: [39, 29, 0, 0, 15, 3, 20, 0, 0, 0, 0, 17, 27, 0, 0],
+          Discovery: [0, 6, 4, 4, 3, 5, 4, 2, 2, 2, 2, 2, 0, 1, 0],
+          HM: [0, 0, 4, 2, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+          CEO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         },
         
         "Solutions Engineer": {
-          Sourced: [0, 0, 0, 0, 0, 0, 0, 0, 0, 106, 14, 0, 0, 0],
-          Discovery: [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
-          HM: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          Sourced: [0, 0, 0, 0, 0, 0, 0, 0, 0, 106, 14, 0, 0, 0, 0],
+          Discovery: [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0],
+          HM: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          CEO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         },
         
         "Head of Sales": {
-          Sourced: [0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 6, 0, 1, 0],
-          Discovery: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5],
-          HM: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1, 0],
-          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1],
-          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          Sourced: [0, 0, 0, 0, 0, 0, 0, 28, 0, 0, 6, 0, 1, 0, 0],
+          Discovery: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 0],
+          HM: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1, 0, 0],
+          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 0],
+          CEO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         },
         
         "Team Lead Solutions Engineer": {
-          Sourced: [0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 5, 0, 0, 0],
-          Discovery: [0, 0, 0, 0, 0, 0, 0, 0, 2, 8, 2, 2, 2, 0],
-          HM: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 0, 4, 0],
-          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          Sourced: [0, 0, 0, 0, 0, 0, 0, 0, 25, 0, 5, 0, 0, 0, 0],
+          Discovery: [0, 0, 0, 0, 0, 0, 0, 0, 2, 8, 2, 2, 2, 0, 0],
+          HM: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 0, 4, 0, 3],
+          Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+          CEO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         }
       },
       
       health: [
         { role: "Account Executive SMB", status: "filled", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/1", note: "" },
         { role: "Solutions Engineer", status: "hold", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "0/1", note: "on hold" },
-        { role: "Account Executive Enterprise", status: "ok", discovery: 4, hm: 1, task: 0, final: 0, offer: 0, hired: "1/2", note: "" },
-        { role: "Account Executive Strategic", status: "crit", discovery: 1, hm: 1, task: 1, final: 0, offer: 0, hired: "1/2", note: "" },
-        { role: "Account Executive Corporate", status: "ok", discovery: 3, hm: 2, task: 1, final: 0, offer: 0, hired: "2/3", note: "" },
-        { role: "Head of Sales", status: "ok", discovery: 3, hm: 3, task: 0, final: 1, offer: 0, hired: "0/1", note: "" },
+        { role: "Account Executive Enterprise", status: "ok", discovery: 3, hm: 1, task: 1, final: 0, offer: 0, hired: "1/2", note: "Constant Outreach" },
+        { role: "Account Executive Strategic", status: "hold", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/2", note: "on hold, confirmed through Bene" },
+        { role: "Account Executive Corporate", status: "ok", discovery: 4, hm: 0, task: 0, final: 1, offer: 0, hired: "2/3", note: "Constant Outreach" },
+        { role: "Head of Sales", status: "filled", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/1", note: "hired: Alexander Wendland" },
         { role: "Team Lead Solutions Engineer", status: "ok", discovery: 1, hm: 4, task: 2, final: 0, offer: 0, hired: "0/1", note: "" }
       ],
       
@@ -460,18 +498,48 @@
       { key: 'Discovery', label: 'Discovery Calls' },
       { key: 'HM', label: 'HM Interviews' },
       { key: 'Case', label: 'Case Studies' },
+      { key: 'CEO', label: 'CEO Interviews' },
       { key: 'Offer', label: 'Offers' },
       { key: 'Hired', label: 'Hires' }
     ];
 
     function renderKPIs() {
-      const t = totalsFor(+weekSel.value, roleSel.value);
+      const weekIndex = +weekSel.value;
+      const t = totalsFor(weekIndex, roleSel.value);
+      const tPrev = weekIndex > 0 ? totalsFor(weekIndex - 1, roleSel.value) : null;
+      
       kpiGrid.innerHTML = '';
       
       kpis.forEach(k => {
         const el = document.createElement('div');
         el.className = 'card pad kpi';
-        el.innerHTML = `<div class="label">${k.label}</div><div class="value">${t[k.key]}</div>`;
+        
+        let changeHtml = '';
+        if (tPrev) {
+          const current = t[k.key];
+          const previous = tPrev[k.key];
+          
+          if (previous === 0 && current === 0) {
+            changeHtml = '<div class="change neutral">– vs last wk</div>';
+          } else if (previous === 0 && current > 0) {
+            changeHtml = '<div class="change positive">+∞% vs last wk</div>';
+          } else if (previous > 0) {
+            const percentChange = ((current - previous) / previous * 100).toFixed(1);
+            const changeClass = percentChange > 0 ? 'positive' : percentChange < 0 ? 'negative' : 'neutral';
+            const sign = percentChange > 0 ? '+' : '';
+            changeHtml = `<div class="change ${changeClass}">${sign}${percentChange}% vs last wk</div>`;
+          } else {
+            changeHtml = '<div class="change neutral">– vs last wk</div>';
+          }
+        } else {
+          changeHtml = '<div class="change neutral">– vs last wk</div>';
+        }
+        
+        el.innerHTML = `
+          <div class="label">${k.label}</div>
+          <div class="value">${t[k.key]}</div>
+          ${changeHtml}
+        `;
         kpiGrid.appendChild(el);
       });
     }
@@ -497,6 +565,8 @@
           }]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: true,
           plugins: { legend: { display: false } },
           scales: { y: { beginAtZero: true } }
         }
@@ -504,13 +574,22 @@
     }
 
     function renderTrend() {
-      const stages = ['Sourced', 'Discovery', 'HM', 'Offer', 'Hired'];
+      const stages = ['Sourced', 'Discovery', 'HM', 'CEO', 'Offer', 'Hired'];
       const roles = asAll(roleSel.value) ? data.roles : [roleSel.value];
-      const series = Object.fromEntries(stages.map(s => [s, Array(data.weeks.length).fill(0)]));
+      
+      // Get current week index and calculate last 4 weeks
+      const currentWeekIndex = +weekSel.value;
+      const startIndex = Math.max(0, currentWeekIndex - 3);
+      const endIndex = currentWeekIndex + 1;
+      
+      // Filter weeks and data for last 4 weeks
+      const displayWeeks = data.weeks.slice(startIndex, endIndex);
+      const series = Object.fromEntries(stages.map(s => [s, Array(displayWeeks.length).fill(0)]));
       
       roles.forEach(r => {
         stages.forEach(s => {
-          (data.weekly[r][s] || []).forEach((v, i) => series[s][i] += safe(v));
+          const weekData = data.weekly[r][s] || [];
+          weekData.slice(startIndex, endIndex).forEach((v, i) => series[s][i] += safe(v));
         });
       });
       
@@ -519,7 +598,7 @@
         data: series[s],
         tension: .35,
         fill: false,
-        borderColor: `hsl(${i * 70} 70% 45%)`,
+        borderColor: `hsl(${i * 60} 70% 45%)`,
         pointRadius: 2.5
       }));
       
@@ -527,9 +606,11 @@
       
       trendChart = new Chart(document.getElementById('trendChart'), {
         type: 'line',
-        data: { labels: data.weeks, datasets },
+        data: { labels: displayWeeks, datasets },
         options: {
-          plugins: { legend: { position: 'bottom' } },
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 8, font: { size: 10 } } } },
           scales: { y: { beginAtZero: true } }
         }
       });
@@ -539,29 +620,36 @@
     function renderHealth() {
       const tbody = document.querySelector('#healthTable tbody');
       tbody.innerHTML = '';
-      const rows = data.health.filter(h => asAll(roleSel.value) || h.role === roleSel.value);
+      let rows = data.health.filter(h => asAll(roleSel.value) || h.role === roleSel.value);
+      
+      // Sort: on hold first, then filled, then open roles (ok, warn, bad)
+      rows.sort((a, b) => {
+        const order = { 'hold': 1, 'filled': 2, 'ok': 3, 'warn': 3, 'bad': 3 };
+        return (order[a.status] || 3) - (order[b.status] || 3);
+      });
       
       rows.forEach(h => {
         const tr = document.createElement('tr');
-        const tag = h.status === 'filled' ? '🏁 Filled' :
-                    h.status === 'ok' ? 'Healthy' :
-                    h.status === 'warn' ? 'Attention' :
-                    h.status === 'bad' ? 'Critical' :
-                    h.status === 'new' ? '○ New' : h.status;
+        const tag = h.status === 'filled' ? 'filled' :
+                    h.status === 'ok' ? 'ok' :
+                    h.status === 'warn' ? 'attention' :
+                    h.status === 'bad' ? 'critical' :
+                    h.status === 'hold' ? 'on hold' : h.status;
         const cls = h.status === 'filled' ? 'filled' :
                     h.status === 'ok' ? 'ok' :
                     h.status === 'warn' ? 'warn' :
-                    h.status === 'bad' ? 'bad' : 'new';
+                    h.status === 'bad' ? 'bad' : 
+                    h.status === 'hold' ? 'warn' : 'new';
         
         tr.innerHTML = `
           <td>${h.role}</td>
-          <td><span class="badge ${cls}">${tag}</span></td>
           <td>${h.discovery || 0}</td>
           <td>${h.hm || 0}</td>
           <td>${h.task || 0}</td>
           <td>${h.final || 0}</td>
           <td>${h.offer || 0}</td>
           <td>${h.hired || 0}</td>
+          <td><span class="badge ${cls}">${tag}</span></td>
           <td style="text-align:left">${h.note || ''}</td>
         `;
         tbody.appendChild(tr);
@@ -570,19 +658,34 @@
 
     function renderNotes() {
       const n = data.notes;
-      document.getElementById('notes').innerHTML = `
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      const notesContainer = document.getElementById('notes');
+      const notesCard = document.getElementById('notesCard');
+      
+      // Check if all notes are empty
+      const allEmpty = n.highlights.every(x => !x || x.trim() === '') && 
+                       n.challenges.every(x => !x || x.trim() === '') && 
+                       n.priorities.every(x => !x || x.trim() === '');
+      
+      if (allEmpty) {
+        notesCard.style.padding = '12px 16px';
+        notesContainer.innerHTML = '<div style="color:var(--muted);font-size:12px">No notes available</div>';
+        return;
+      }
+      
+      notesCard.style.padding = '16px';
+      notesContainer.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:start">
           <div>
-            <h4>Highlights</h4>
-            <ul>${n.highlights.map(x => `<li>${x}</li>`).join('')}</ul>
+            <h4 style="margin:0 0 8px 0;font-size:13px">Highlights</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;min-height:20px">${n.highlights.filter(x => x && x.trim()).map(x => `<li>${x}</li>`).join('') || '<li style="color:var(--muted)">–</li>'}</ul>
           </div>
           <div>
-            <h4>Challenges</h4>
-            <ul>${n.challenges.map(x => `<li>${x}</li>`).join('')}</ul>
+            <h4 style="margin:0 0 8px 0;font-size:13px">Challenges</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;min-height:20px">${n.challenges.filter(x => x && x.trim()).map(x => `<li>${x}</li>`).join('') || '<li style="color:var(--muted)">–</li>'}</ul>
           </div>
           <div>
-            <h4>Outreach Priorities</h4>
-            <ul>${n.priorities.map(x => `<li>${x}</li>`).join('')}</ul>
+            <h4 style="margin:0 0 8px 0;font-size:13px">Outreach Priorities</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13px;min-height:20px">${n.priorities.filter(x => x && x.trim()).map(x => `<li>${x}</li>`).join('') || '<li style="color:var(--muted)">–</li>'}</ul>
           </div>
         </div>
       `;
