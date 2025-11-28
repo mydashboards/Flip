@@ -393,7 +393,7 @@
           Case: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
           CEO: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
           Offer: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          Hired: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
         },
         
         "Solutions Engineer": {
@@ -427,15 +427,28 @@
         }
       },
       
-      health: [
-        { role: "Account Executive SMB", status: "filled", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/1", note: "" },
-        { role: "Solutions Engineer", status: "hold", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "0/1", note: "on hold" },
-        { role: "Account Executive Enterprise", status: "ok", discovery: 3, hm: 1, task: 1, final: 0, offer: 0, hired: "1/2", note: "Constant Outreach" },
-        { role: "Account Executive Strategic", status: "hold", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/2", note: "on hold, confirmed through Bene" },
-        { role: "Account Executive Corporate", status: "ok", discovery: 4, hm: 0, task: 0, final: 1, offer: 0, hired: "2/3", note: "Constant Outreach" },
-        { role: "Head of Sales", status: "filled", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/1", note: "hired: Alexander Wendland" },
-        { role: "Team Lead Solutions Engineer", status: "ok", discovery: 1, hm: 4, task: 2, final: 0, offer: 0, hired: "0/1", note: "" }
-      ],
+      health: {
+        // Week index 13 (w/c 17 Nov 2025)
+        13: [
+          { role: "Account Executive SMB", status: "filled", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/1", note: "" },
+          { role: "Solutions Engineer", status: "hold", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "0/1", note: "" },
+          { role: "Account Executive Enterprise", status: "ok", discovery: 3, hm: 1, task: 1, final: 0, offer: 0, hired: "1/2", note: "" },
+          { role: "Account Executive Strategic", status: "ok", discovery: 1, hm: 1, task: 1, final: 0, offer: 0, hired: "1/2", note: "hired: Simon Wester" },
+          { role: "Account Executive Corporate", status: "ok", discovery: 3, hm: 2, task: 1, final: 0, offer: 0, hired: "2/3", note: "" },
+          { role: "Head of Sales", status: "ok", discovery: 3, hm: 3, task: 0, final: 0, offer: 1, hired: "0/1", note: "" },
+          { role: "Team Lead Solutions Engineer", status: "ok", discovery: 1, hm: 7, task: 2, final: 0, offer: 0, hired: "0/1", note: "" }
+        ],
+        // Week index 14 (w/c 24 Nov 2025) - default for other weeks
+        default: [
+          { role: "Account Executive SMB", status: "filled", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/1", note: "" },
+          { role: "Solutions Engineer", status: "hold", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "0/1", note: "on hold" },
+          { role: "Account Executive Enterprise", status: "ok", discovery: 3, hm: 1, task: 1, final: 0, offer: 0, hired: "1/2", note: "Constant Outreach" },
+          { role: "Account Executive Strategic", status: "hold", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/2", note: "on hold, confirmed through Bene" },
+          { role: "Account Executive Corporate", status: "ok", discovery: 4, hm: 0, task: 0, final: 1, offer: 0, hired: "2/3", note: "Constant Outreach" },
+          { role: "Head of Sales", status: "filled", discovery: 0, hm: 0, task: 0, final: 0, offer: 0, hired: "1/1", note: "hired: Alexander Wendland" },
+          { role: "Team Lead Solutions Engineer", status: "ok", discovery: 1, hm: 4, task: 2, final: 0, offer: 0, hired: "0/1", note: "" }
+        ]
+      },
       
       notes: {
         highlights: [""],
@@ -620,7 +633,11 @@
     function renderHealth() {
       const tbody = document.querySelector('#healthTable tbody');
       tbody.innerHTML = '';
-      let rows = data.health.filter(h => asAll(roleSel.value) || h.role === roleSel.value);
+      const weekIndex = +weekSel.value;
+      
+      // Get health data for the selected week (use default if week not defined)
+      const healthData = data.health[weekIndex] || data.health.default;
+      let rows = healthData.filter(h => asAll(roleSel.value) || h.role === roleSel.value);
       
       // Sort: on hold first, then filled, then open roles (ok, warn, bad)
       rows.sort((a, b) => {
